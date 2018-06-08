@@ -47,7 +47,7 @@ func deleteInsultById(w http.ResponseWriter, r *http.Request) {
 	id, err := getIDFromRequest(r)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(err.Error()))
+		w.Write([]byte("Failed to retrieve ID: " + err.Error()))
 		return
 	}
 
@@ -61,7 +61,7 @@ func getInsultById(w http.ResponseWriter, r *http.Request) {
 	id, err := getIDFromRequest(r)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(err.Error()))
+		w.Write([]byte("Failed to retrieve ID: " + err.Error()))
 		return
 	}
 
@@ -75,6 +75,14 @@ func getInsultById(w http.ResponseWriter, r *http.Request) {
 
 func putInsult(w http.ResponseWriter, r *http.Request) {
 	log.Printf("Added insults !")
+	decoder := json.NewDecoder(r.Body)
+
+	entity := insult{}
+	if err := decoder.Decode(&entity); err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte("Failed to decode request:" + err.Error()))
+		return
+	}
 	// TODO
 	w.WriteHeader(http.StatusOK)
 }
