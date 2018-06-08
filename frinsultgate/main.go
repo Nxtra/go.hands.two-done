@@ -16,6 +16,12 @@ func main() {
 	r := mux.NewRouter()
 
 	r.Methods("GET").Path("/insults/{id:[0-9]+}").HandlerFunc(getInsultById)
+	r.Methods("POST").Path("/insults/vote/{id:[0-9]+}").HandlerFunc(voteInsultById)
+	r.Methods("DELETE").Path("/insults/{id:[0-9]+}").HandlerFunc(deleteInsultById)
+
+	r.Methods("PUT").Path("/insults").HandlerFunc(putInsult)
+
+	r.Methods("GET").Path("/insults").HandlerFunc(getInsults)
 
 	log.Printf("Listening on port %s", port)
 	log.Fatal(http.ListenAndServe(":"+port, r))
