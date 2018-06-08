@@ -83,6 +83,30 @@ func putInsult(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("Failed to decode request:" + err.Error()))
 		return
 	}
+
+	log.Printf("Putting %T", entity)
+	// TODO
+	w.WriteHeader(http.StatusOK)
+}
+
+func updateInsultById(w http.ResponseWriter, r *http.Request) {
+	id, err := getIDFromRequest(r)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte("Failed to retrieve ID: " + err.Error()))
+		return
+	}
+
+	decoder := json.NewDecoder(r.Body)
+	entity := insult{}
+	if err := decoder.Decode(&entity); err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte("Failed to decode request:" + err.Error()))
+		return
+	}
+	entity.ID = id
+
+	log.Printf("Updating entity %T", entity)
 	// TODO
 	w.WriteHeader(http.StatusOK)
 }

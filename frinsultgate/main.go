@@ -18,6 +18,7 @@ func main() {
 	r.Methods("GET").Path("/insults/{id:[0-9]+}").HandlerFunc(getInsultById)
 	r.Methods("POST").Path("/insults/vote/{id:[0-9]+}").HandlerFunc(voteInsultById)
 	r.Methods("DELETE").Path("/insults/{id:[0-9]+}").HandlerFunc(deleteInsultById)
+	r.Methods("PATCH").Path("/insults/{id:[0-9]+}").HandlerFunc(updateInsultById)
 
 	r.Methods("PUT").Path("/insults").HandlerFunc(putInsult)
 
