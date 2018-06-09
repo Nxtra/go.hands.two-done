@@ -12,7 +12,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func replyWithJson(w http.ResponseWriter, reply interface{}, status int) {
+func replyWithJSON(w http.ResponseWriter, reply interface{}, status int) {
 	b, err := json.Marshal(reply)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -36,14 +36,14 @@ func getIDFromRequest(r *http.Request) (int, error) {
 }
 
 func getInsults(w http.ResponseWriter, r *http.Request) {
-	replyWithJson(w, &[]insult{{
+	replyWithJSON(w, &[]insult{{
 		ID:    1,
 		Text:  "Lazy fuck !",
 		Score: 69,
 	}}, http.StatusOK)
 }
 
-func deleteInsultById(w http.ResponseWriter, r *http.Request) {
+func deleteInsultByID(w http.ResponseWriter, r *http.Request) {
 	id, err := getIDFromRequest(r)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -57,7 +57,7 @@ func deleteInsultById(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
-func getInsultById(w http.ResponseWriter, r *http.Request) {
+func getInsultByID(w http.ResponseWriter, r *http.Request) {
 	id, err := getIDFromRequest(r)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -67,7 +67,7 @@ func getInsultById(w http.ResponseWriter, r *http.Request) {
 
 	// TODO
 
-	replyWithJson(w, &insult{
+	replyWithJSON(w, &insult{
 		ID:   id,
 		Text: "Fuck off !",
 	}, http.StatusOK)
@@ -84,12 +84,12 @@ func putInsult(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	log.Printf("Putting %T", entity)
+	log.Printf("Putting %s", entity.String())
 	// TODO
 	w.WriteHeader(http.StatusOK)
 }
 
-func updateInsultById(w http.ResponseWriter, r *http.Request) {
+func updateInsultByID(w http.ResponseWriter, r *http.Request) {
 	id, err := getIDFromRequest(r)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -111,7 +111,7 @@ func updateInsultById(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
-func voteInsultById(w http.ResponseWriter, r *http.Request) {
+func voteInsultByID(w http.ResponseWriter, r *http.Request) {
 	id, err := getIDFromRequest(r)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
