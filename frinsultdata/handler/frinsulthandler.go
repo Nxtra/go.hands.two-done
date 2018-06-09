@@ -3,8 +3,7 @@ package handler
 import (
 	"context"
 
-	"github.com/jinzhu/gorm"
-	"github.com/pijalu/go.hands.two/frinsultdata/model"
+	"github.com/pijalu/go.hands.two/frinsultdata/mapper"
 	"github.com/pijalu/go.hands.two/frinsultdata/repository"
 	"github.com/pijalu/go.hands.two/frinsultproto"
 	"github.com/pkg/errors"
@@ -25,11 +24,7 @@ func (f *FrinsultHandler) GetFrinsultByID(c context.Context, req *frinsultproto.
 		return err
 	}
 
-	*rep = frinsultproto.Frinsult{
-		ID:    int64(dbInsult.ID),
-		Text:  dbInsult.Text,
-		Score: int64(dbInsult.Score),
-	}
+	*rep = *mapper.Db2Proto(dbInsult)
 	return nil
 }
 
@@ -50,11 +45,20 @@ func (f *FrinsultHandler) UpdateFrinsult(c context.Context, req *frinsultproto.F
 		return errors.New("invalid ID")
 	}
 
-	return repository.UpdateFrinsult(&model.Frinsult{
-		Model: gorm.Model{ID: ID},
-		Text:  req.GetText(),
-		Score: int(req.GetScore()),
-	})
+	return repository.UpdateFrinsult(
+		mapper.Proto2Db(req))
+}
+
+// InsertFrinsult updates an insult
+func (f *FrinsultHandler) InsertFrinsult(c context.Context, req *frinsultproto.Frinsult, rep *frinsultproto.Frinsult) error {
+	fi, err := repository.InsertFrinsult(
+		mapper.Proto2Db(req))
+	if err != nil {
+		return err
+	}
+
+	*rep = *mapper.Db2Proto(fi)
+	return nil
 }
 
 // VoteFrinsultByID update score of a given insult
@@ -68,16 +72,16 @@ func (f *FrinsultHandler) VoteFrinsultByID(c context.Context, v *frinsultproto.V
 }
 
 // GetFrinsults returns a list of items
-func (f *FrinsultHandler) GetFrinsults(c context.Context, _ *frinsultproto.Void, s frinsultproto.FrinsultService_GetFrinsultsStream) error {
+func (f *FrinsultHandler) GetFrinsults(ctx context.Context, in *frinsultproto.Void, out *frinsultproto.Frinsults) error {
 	insults, err := repository.GetFrinsults()
 	if err != nil {
 		return err
 	}
 
+	out.Insults = make([]*frinsultproto.Frinsult, 0, len(insults))
+
 	for _, fri := range insults {
-		if err := s.SendMsg(&fri); err != nil {
-			return errors.Wrap(err, "Error streaming records")
-		}
+		out.Insults = append(out.Insults, mapper.Db2Proto(&fri))
 	}
 
 	return nil

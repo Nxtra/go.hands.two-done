@@ -5,20 +5,12 @@ import (
 
 	micro "github.com/micro/go-micro"
 	"github.com/pijalu/go.hands.two/frinsultdata/handler"
-	"github.com/pijalu/go.hands.two/frinsultdata/repository"
 	"github.com/pijalu/go.hands.two/frinsultproto"
 )
 
 func main() {
-	// Close DB at end of exec
-	defer func() {
-		if repository.DB != nil {
-			repository.DB.Close()
-		}
-	}()
-
 	service := micro.NewService(
-		micro.Name("frinsult.micro.srv.micro"),
+		micro.Name("frinsult.srv.micro"),
 		micro.Version("latest"),
 	)
 

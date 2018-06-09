@@ -14,9 +14,6 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
 )
 
-// DB is the general DB
-var DB *gorm.DB
-
 // withDB execute a function with a gorm db
 func withDB(f func(*gorm.DB) error) error {
 	dbType := env.GetEnvWithDefault("DB_TYPE", "sqlite3")
@@ -28,17 +25,6 @@ func withDB(f func(*gorm.DB) error) error {
 	}
 	defer db.Close()
 	return f(db)
-}
-
-// init will automigrate our DB
-func init() {
-	err := withDB(func(db *gorm.DB) error {
-		db.AutoMigrate(&model.Frinsult{})
-		return nil
-	})
-	if err != nil {
-		panic(err)
-	}
 }
 
 // GetFrinsultByID returns a frinsult by id
@@ -73,6 +59,18 @@ func UpdateFrinsult(f *model.Frinsult) error {
 	})
 }
 
+// InsertFrinsult insert a frinsult
+func InsertFrinsult(f *model.Frinsult) (*model.Frinsult, error) {
+	log.Printf("Updating insult for id %d", f.ID)
+
+	err := withDB(func(db *gorm.DB) error {
+		db.Create(f)
+		return nil
+	})
+
+	return f, err
+}
+
 // GetFrinsults returns a list of frinsult
 func GetFrinsults() ([]model.Frinsult, error) {
 	log.Printf("Listing insults")
@@ -90,7 +88,7 @@ func VoteForFrinsult(ID uint, vote int) error {
 	log.Printf("Voting for insult id %d - value: %d", ID, vote)
 
 	return withDB(func(db *gorm.DB) error {
-		DB.Model(&model.Frinsult{}).Update(
+		db.Model(&model.Frinsult{Model: gorm.Model{ID: ID}}).Update(
 			"score",
 			gorm.Expr("score + ?", vote))
 		return nil

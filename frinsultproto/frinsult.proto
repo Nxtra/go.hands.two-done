@@ -8,6 +8,10 @@ message Frinsult {
 	int64  Score = 3;
 }
 
+message Frinsults {
+	repeated Frinsult insults = 1;
+}
+
 message ByIDRequest {
 		int64  ID    = 1;
 }
@@ -22,9 +26,10 @@ message void {}
 service FrinsultService {
 	rpc GetFrinsultByID(ByIDRequest)    returns (Frinsult) {}
 	rpc DeleteFrinsultByID(ByIDRequest) returns (void) {}
+	rpc InsertFrinsult(Frinsult)        returns (Frinsult) {}
 	rpc UpdateFrinsult(Frinsult)        returns (void) {}
 	rpc VoteFrinsultByID(VoteRequest)   returns (void) {}
 	
-	rpc GetFrinsults(void)        returns (stream Frinsult) {}
+	rpc GetFrinsults(void)        returns (Frinsults) {}
 
 }

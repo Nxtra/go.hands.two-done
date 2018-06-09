@@ -9,6 +9,7 @@ It is generated from these files:
 
 It has these top-level messages:
 	Frinsult
+	Frinsults
 	ByIDRequest
 	VoteRequest
 	Void
@@ -46,9 +47,10 @@ var _ server.Option
 type FrinsultService interface {
 	GetFrinsultByID(ctx context.Context, in *ByIDRequest, opts ...client.CallOption) (*Frinsult, error)
 	DeleteFrinsultByID(ctx context.Context, in *ByIDRequest, opts ...client.CallOption) (*Void, error)
+	InsertFrinsult(ctx context.Context, in *Frinsult, opts ...client.CallOption) (*Frinsult, error)
 	UpdateFrinsult(ctx context.Context, in *Frinsult, opts ...client.CallOption) (*Void, error)
 	VoteFrinsultByID(ctx context.Context, in *VoteRequest, opts ...client.CallOption) (*Void, error)
-	GetFrinsults(ctx context.Context, in *Void, opts ...client.CallOption) (FrinsultService_GetFrinsultsService, error)
+	GetFrinsults(ctx context.Context, in *Void, opts ...client.CallOption) (*Frinsults, error)
 }
 
 type frinsultService struct {
@@ -89,6 +91,16 @@ func (c *frinsultService) DeleteFrinsultByID(ctx context.Context, in *ByIDReques
 	return out, nil
 }
 
+func (c *frinsultService) InsertFrinsult(ctx context.Context, in *Frinsult, opts ...client.CallOption) (*Frinsult, error) {
+	req := c.c.NewRequest(c.name, "FrinsultService.InsertFrinsult", in)
+	out := new(Frinsult)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *frinsultService) UpdateFrinsult(ctx context.Context, in *Frinsult, opts ...client.CallOption) (*Void, error) {
 	req := c.c.NewRequest(c.name, "FrinsultService.UpdateFrinsult", in)
 	out := new(Void)
@@ -109,48 +121,14 @@ func (c *frinsultService) VoteFrinsultByID(ctx context.Context, in *VoteRequest,
 	return out, nil
 }
 
-func (c *frinsultService) GetFrinsults(ctx context.Context, in *Void, opts ...client.CallOption) (FrinsultService_GetFrinsultsService, error) {
-	req := c.c.NewRequest(c.name, "FrinsultService.GetFrinsults", &Void{})
-	stream, err := c.c.Stream(ctx, req, opts...)
+func (c *frinsultService) GetFrinsults(ctx context.Context, in *Void, opts ...client.CallOption) (*Frinsults, error) {
+	req := c.c.NewRequest(c.name, "FrinsultService.GetFrinsults", in)
+	out := new(Frinsults)
+	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
 		return nil, err
 	}
-	if err := stream.Send(in); err != nil {
-		return nil, err
-	}
-	return &frinsultServiceGetFrinsults{stream}, nil
-}
-
-type FrinsultService_GetFrinsultsService interface {
-	SendMsg(interface{}) error
-	RecvMsg(interface{}) error
-	Close() error
-	Recv() (*Frinsult, error)
-}
-
-type frinsultServiceGetFrinsults struct {
-	stream client.Stream
-}
-
-func (x *frinsultServiceGetFrinsults) Close() error {
-	return x.stream.Close()
-}
-
-func (x *frinsultServiceGetFrinsults) SendMsg(m interface{}) error {
-	return x.stream.Send(m)
-}
-
-func (x *frinsultServiceGetFrinsults) RecvMsg(m interface{}) error {
-	return x.stream.Recv(m)
-}
-
-func (x *frinsultServiceGetFrinsults) Recv() (*Frinsult, error) {
-	m := new(Frinsult)
-	err := x.stream.Recv(m)
-	if err != nil {
-		return nil, err
-	}
-	return m, nil
+	return out, nil
 }
 
 // Server API for FrinsultService service
@@ -158,18 +136,20 @@ func (x *frinsultServiceGetFrinsults) Recv() (*Frinsult, error) {
 type FrinsultServiceHandler interface {
 	GetFrinsultByID(context.Context, *ByIDRequest, *Frinsult) error
 	DeleteFrinsultByID(context.Context, *ByIDRequest, *Void) error
+	InsertFrinsult(context.Context, *Frinsult, *Frinsult) error
 	UpdateFrinsult(context.Context, *Frinsult, *Void) error
 	VoteFrinsultByID(context.Context, *VoteRequest, *Void) error
-	GetFrinsults(context.Context, *Void, FrinsultService_GetFrinsultsStream) error
+	GetFrinsults(context.Context, *Void, *Frinsults) error
 }
 
 func RegisterFrinsultServiceHandler(s server.Server, hdlr FrinsultServiceHandler, opts ...server.HandlerOption) {
 	type frinsultService interface {
 		GetFrinsultByID(ctx context.Context, in *ByIDRequest, out *Frinsult) error
 		DeleteFrinsultByID(ctx context.Context, in *ByIDRequest, out *Void) error
+		InsertFrinsult(ctx context.Context, in *Frinsult, out *Frinsult) error
 		UpdateFrinsult(ctx context.Context, in *Frinsult, out *Void) error
 		VoteFrinsultByID(ctx context.Context, in *VoteRequest, out *Void) error
-		GetFrinsults(ctx context.Context, stream server.Stream) error
+		GetFrinsults(ctx context.Context, in *Void, out *Frinsults) error
 	}
 	type FrinsultService struct {
 		frinsultService
@@ -190,6 +170,10 @@ func (h *frinsultServiceHandler) DeleteFrinsultByID(ctx context.Context, in *ByI
 	return h.FrinsultServiceHandler.DeleteFrinsultByID(ctx, in, out)
 }
 
+func (h *frinsultServiceHandler) InsertFrinsult(ctx context.Context, in *Frinsult, out *Frinsult) error {
+	return h.FrinsultServiceHandler.InsertFrinsult(ctx, in, out)
+}
+
 func (h *frinsultServiceHandler) UpdateFrinsult(ctx context.Context, in *Frinsult, out *Void) error {
 	return h.FrinsultServiceHandler.UpdateFrinsult(ctx, in, out)
 }
@@ -198,37 +182,6 @@ func (h *frinsultServiceHandler) VoteFrinsultByID(ctx context.Context, in *VoteR
 	return h.FrinsultServiceHandler.VoteFrinsultByID(ctx, in, out)
 }
 
-func (h *frinsultServiceHandler) GetFrinsults(ctx context.Context, stream server.Stream) error {
-	m := new(Void)
-	if err := stream.Recv(m); err != nil {
-		return err
-	}
-	return h.FrinsultServiceHandler.GetFrinsults(ctx, m, &frinsultServiceGetFrinsultsStream{stream})
-}
-
-type FrinsultService_GetFrinsultsStream interface {
-	SendMsg(interface{}) error
-	RecvMsg(interface{}) error
-	Close() error
-	Send(*Frinsult) error
-}
-
-type frinsultServiceGetFrinsultsStream struct {
-	stream server.Stream
-}
-
-func (x *frinsultServiceGetFrinsultsStream) Close() error {
-	return x.stream.Close()
-}
-
-func (x *frinsultServiceGetFrinsultsStream) SendMsg(m interface{}) error {
-	return x.stream.Send(m)
-}
-
-func (x *frinsultServiceGetFrinsultsStream) RecvMsg(m interface{}) error {
-	return x.stream.Recv(m)
-}
-
-func (x *frinsultServiceGetFrinsultsStream) Send(m *Frinsult) error {
-	return x.stream.Send(m)
+func (h *frinsultServiceHandler) GetFrinsults(ctx context.Context, in *Void, out *Frinsults) error {
+	return h.FrinsultServiceHandler.GetFrinsults(ctx, in, out)
 }

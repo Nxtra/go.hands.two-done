@@ -6,19 +6,32 @@ import (
 
 	"github.com/gorilla/mux"
 
+	micro "github.com/pijalu/go-micro"
 	"github.com/pijalu/go.hands.two/env"
+	"github.com/pijalu/go.hands.two/frinsultproto"
 )
 
+var friService frinsultproto.FrinsultService
+
 func main() {
+	// Load micro client
+	service := micro.NewService(
+		micro.Name("frinsult.client.micro"),
+	)
+	service.Init()
+	friService = frinsultproto.NewFrinsultService("frinsult.srv.micro", service.Client())
+
+	// start gateway
 	port := env.GetEnvWithDefault("PORT", "8080")
 	r := mux.NewRouter()
 
 	r.Methods("GET").Path("/insults/{id:[0-9]+}").HandlerFunc(getInsultByID)
-	r.Methods("POST").Path("/insults/vote/{id:[0-9]+}").HandlerFunc(voteInsultByID)
 	r.Methods("DELETE").Path("/insults/{id:[0-9]+}").HandlerFunc(deleteInsultByID)
 	r.Methods("PATCH").Path("/insults/{id:[0-9]+}").HandlerFunc(updateInsultByID)
-
 	r.Methods("PUT").Path("/insults").HandlerFunc(putInsult)
+
+	r.Methods("POST").Path("/insults/upvote/{id:[0-9]+}").HandlerFunc(upvoteInsultByID)
+	r.Methods("POST").Path("/insults/downvote/{id:[0-9]+}").HandlerFunc(downvoteInsultByID)
 
 	r.Methods("GET").Path("/insults").HandlerFunc(getInsults)
 
