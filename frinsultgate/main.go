@@ -9,6 +9,10 @@ import (
 	micro "github.com/pijalu/go-micro"
 	"github.com/pijalu/go.hands.two/env"
 	"github.com/pijalu/go.hands.two/frinsultproto"
+
+	// Register k8s specific
+	_ "github.com/micro/go-plugins/registry/kubernetes"
+	_ "github.com/micro/go-plugins/selector/static"
 )
 
 var friService frinsultproto.FrinsultService
