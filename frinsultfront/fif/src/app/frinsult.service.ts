@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { Insult } from './insult';
 import { environment } from '../environments/environment.prod';
+
+
 
 @Injectable({
   providedIn: 'root'
@@ -16,11 +18,19 @@ export class FrinsultService {
     return this.http.get<Insult[]>(this.url)
   }
 
+  vote(url: string) {
+    this.http.post(url, null).subscribe(
+    res => {},
+    err => {
+      console.log("Error occured", err);
+    })
+  }
+
   upvote(id: number) {
-    this.http.post(this.url+"/upvote/"+id, null)
+    this.vote(this.url+"/upvote/"+id)
   }
 
   downvote(id: number) {
-    this.http.post(this.url+"/downvote/"+id, null)
+    this.vote(this.url+"/downvote/"+id)
   }
 }

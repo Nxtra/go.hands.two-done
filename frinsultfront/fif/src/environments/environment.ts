@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  insultUrl: "//127.0.0.1:8080/api/insult"
+  insultUrl: "//127.0.0.1:8080/api/insults"
 };
 
 /*

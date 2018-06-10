@@ -1,5 +1,5 @@
 export class Insult {
-    ID: number;
-    Text: string;
-    Score: number;
+    id: number;
+    text: string;
+    score: number;
 }
