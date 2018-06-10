@@ -12,7 +12,7 @@
 				"header": [],
 				"body": {},
 				"url": {
-					"raw": "http://127.0.0.1:8080/insults",
+					"raw": "http://127.0.0.1:8080/api/insults",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -22,6 +22,7 @@
 					],
 					"port": "8080",
 					"path": [
+						"api",
 						"insults"
 					]
 				}
@@ -43,7 +44,7 @@
 					"raw": "{\n    \"text\": \"Barbapapa\"\n}"
 				},
 				"url": {
-					"raw": "http://127.0.0.1:8080/insults",
+					"raw": "http://127.0.0.1:8080/api/insults",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -53,6 +54,7 @@
 					],
 					"port": "8080",
 					"path": [
+						"api",
 						"insults"
 					]
 				}
@@ -74,7 +76,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "http://127.0.0.1:8080/insults/upvote/7",
+					"raw": "http://127.0.0.1:8080/api/insults/upvote/7",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -84,6 +86,7 @@
 					],
 					"port": "8080",
 					"path": [
+						"api",
 						"insults",
 						"upvote",
 						"7"
@@ -107,7 +110,7 @@
 					"raw": "{\n    \"text\": \"Barbapapa\"\n}"
 				},
 				"url": {
-					"raw": "http://127.0.0.1:8080/insults/downvote/7",
+					"raw": "http://127.0.0.1:8080/api/insults/downvote/7",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -117,6 +120,7 @@
 					],
 					"port": "8080",
 					"path": [
+						"api",
 						"insults",
 						"downvote",
 						"7"
@@ -132,7 +136,7 @@
 				"header": [],
 				"body": {},
 				"url": {
-					"raw": "http://127.0.0.1:8080/insults/1",
+					"raw": "http://127.0.0.1:8080/api/insults/1",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -142,6 +146,7 @@
 					],
 					"port": "8080",
 					"path": [
+						"api",
 						"insults",
 						"1"
 					]
@@ -156,7 +161,7 @@
 				"header": [],
 				"body": {},
 				"url": {
-					"raw": "http://127.0.0.1:8080/insults/1",
+					"raw": "http://127.0.0.1:8080/api/insults/1",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -166,6 +171,7 @@
 					],
 					"port": "8080",
 					"path": [
+						"api",
 						"insults",
 						"1"
 					]
@@ -180,7 +186,7 @@
 				"header": [],
 				"body": {},
 				"url": {
-					"raw": "http://127.0.0.1:8080/insults/7",
+					"raw": "http://127.0.0.1:8080/api/insults/7",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -190,6 +196,7 @@
 					],
 					"port": "8080",
 					"path": [
+						"api",
 						"insults",
 						"7"
 					]
