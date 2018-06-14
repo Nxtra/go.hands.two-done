@@ -3,25 +3,32 @@ package main
 import (
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/gorilla/mux"
 
-	micro "github.com/pijalu/go-micro"
+	micro "github.com/micro/go-micro"
+	k8s "github.com/micro/kubernetes/go/micro"
+
 	"github.com/pijalu/go.hands.two/env"
 	"github.com/pijalu/go.hands.two/frinsultproto"
-
-	// Register k8s specific
-	_ "github.com/micro/go-plugins/registry/kubernetes"
-	_ "github.com/micro/go-plugins/selector/static"
 )
 
 var friService frinsultproto.FrinsultService
 
 func main() {
-	// Load micro client
-	service := micro.NewService(
-		micro.Name("frinsult.client.micro"),
-	)
+	var service micro.Service
+	// Create service
+	if os.Getenv("USE_K8S") == "true" {
+		service = k8s.NewService(
+			micro.Name("frinsult.client.micro"),
+		)
+	} else {
+		service = micro.NewService(
+			micro.Name("frinsult.client.micro"),
+		)
+	}
+
 	service.Init()
 	friService = frinsultproto.NewFrinsultService("frinsult.srv.micro", service.Client())
 
