@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 
 	"github.com/gorilla/mux"
 
@@ -19,7 +20,8 @@ var friService frinsultproto.FrinsultService
 func main() {
 	var service micro.Service
 	// Create service
-	if os.Getenv("USE_K8S") == "true" {
+	useK8S, _ := strconv.ParseBool(os.Getenv("USE_K8S"))
+	if useK8S {
 		service = k8s.NewService(
 			micro.Name("frinsult.client.micro"),
 		)

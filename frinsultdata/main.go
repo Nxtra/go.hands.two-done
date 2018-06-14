@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"os"
+	"strconv"
 
 	micro "github.com/micro/go-micro"
 	k8s "github.com/micro/kubernetes/go/micro"
@@ -14,7 +15,8 @@ import (
 func main() {
 	var service micro.Service
 	// Create service
-	if os.Getenv("USE_K8S") == "true" {
+	useK8S, _ := strconv.ParseBool(os.Getenv("USE_K8S"))
+	if useK8S {
 		service = k8s.NewService(
 			micro.Name("frinsult.srv.micro"),
 			micro.Version("latest"),
