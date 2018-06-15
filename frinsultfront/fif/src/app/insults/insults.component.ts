@@ -22,13 +22,11 @@ export class InsultsComponent implements OnInit {
 
   upvote(id: number) {
     console.log("upvote", id);  
-    this.service.upvote(id)
-    this.getInsults()
+    this.service.upvote(id, () => this.getInsults())
   }
 
   downvote(id: number) {    
     console.log("downvote", id);
-    this.service.downvote(id)
-    this.getInsults()
+    this.service.downvote(id, () => this.getInsults())
   }
 }

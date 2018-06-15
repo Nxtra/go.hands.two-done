@@ -18,19 +18,21 @@ export class FrinsultService {
     return this.http.get<Insult[]>(this.url)
   }
 
-  vote(url: string) {
+  vote(url: string, callback) {
     this.http.post(url, null).subscribe(
-    res => {},
+    res => {
+      callback()
+    },
     err => {
       console.log("Error occured", err);
     })
   }
 
-  upvote(id: number) {
-    this.vote(this.url+"/upvote/"+id)
+  upvote(id: number, callback) {
+    this.vote(this.url+"/upvote/"+id, callback)
   }
 
-  downvote(id: number) {
-    this.vote(this.url+"/downvote/"+id)
+  downvote(id: number, callback) {
+    this.vote(this.url+"/downvote/"+id, callback)
   }
 }
