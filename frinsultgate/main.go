@@ -38,15 +38,21 @@ func main() {
 	port := env.GetEnvWithDefault("PORT", "8080")
 	r := mux.NewRouter()
 
-	r.Methods("GET").Path("/api/insults/{id:[0-9]+}").HandlerFunc(getInsultByID)
-	r.Methods("DELETE").Path("/api/insults/{id:[0-9]+}").HandlerFunc(deleteInsultByID)
-	r.Methods("PATCH").Path("/api/insults/{id:[0-9]+}").HandlerFunc(updateInsultByID)
-	r.Methods("PUT").Path("/api/insults").HandlerFunc(putInsult)
+	// We will use ingress on K8S for routing
+	prefix := ""
+	if !useK8S {
+		prefix = "/api"
+	}
 
-	r.Methods("POST").Path("/api/insults/upvote/{id:[0-9]+}").HandlerFunc(upvoteInsultByID)
-	r.Methods("POST").Path("/api/insults/downvote/{id:[0-9]+}").HandlerFunc(downvoteInsultByID)
+	r.Methods("GET").Path(prefix + "/insults/{id:[0-9]+}").HandlerFunc(getInsultByID)
+	r.Methods("DELETE").Path(prefix + "/insults/{id:[0-9]+}").HandlerFunc(deleteInsultByID)
+	r.Methods("PATCH").Path(prefix + "/insults/{id:[0-9]+}").HandlerFunc(updateInsultByID)
+	r.Methods("PUT").Path(prefix + "/insults").HandlerFunc(putInsult)
 
-	r.Methods("GET").Path("/api/insults").HandlerFunc(getInsults)
+	r.Methods("POST").Path(prefix + "/insults/upvote/{id:[0-9]+}").HandlerFunc(upvoteInsultByID)
+	r.Methods("POST").Path(prefix + "/insults/downvote/{id:[0-9]+}").HandlerFunc(downvoteInsultByID)
+
+	r.Methods("GET").Path(prefix + "/insults").HandlerFunc(getInsults)
 
 	log.Printf("Listening on port %s", port)
 	log.Fatal(http.ListenAndServe(":"+port, r))
