@@ -7,4 +7,4 @@ RUN npm install && ng build --prod
 FROM nginx:alpine
 COPY nginx.conf /etc/nginx/nginx.conf
 WORKDIR /usr/share/nginx/html
-COPY --from=0 /fif/dist/ .
+COPY --from=0 /fif/dist/fif/ .
